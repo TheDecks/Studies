@@ -1,6 +1,6 @@
 from typing import Union
 
-import AgentBasedModeling.common.log.fmt_dict as fmt
+import AnalysisOfUnstructuredData.common.log.fmt_dict as fmt
 
 import logging
 import sys

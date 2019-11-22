@@ -28,6 +28,10 @@ class MainInterface:
     def _list_choosing_factory(self) -> Callable:
         if self._args.list == 'one':
             return self.__run_list_1
+        elif self._args.list == 'two':
+            return self.__run_list_2
+        elif self._args.list == 'three':
+            return self.__run_list_3
 
     @ld.debug_timer_dec(logger=LOGGER)
     def __run_list_1(self):
@@ -58,7 +62,35 @@ class MainInterface:
                 out_file = out_file_template.format(counter)
             fig.savefig(out_file)
 
+    @ld.debug_timer_dec(logger=LOGGER)
+    def __run_list_2(self):
+        from AnalysisOfUnstructuredData.lists.list2 import connections_graph as cg
+        hsc_conn_graph = cg.ConnectionsGraph(
+            restrictors=self._args.sections, single_person=tuple(self._args.person),
+            keep_non_hsc=self._args.show_non_hsc
+        )
+        hsc_conn_graph.create_publishers_and_relations()
+        hsc_conn_graph.setup_edges()
+        hsc_conn_graph.setup_nodes()
+        hsc_conn_graph.draw_graph()
+
+    @ld.debug_timer_dec(logger=LOGGER)
+    def __run_list_3(self):
+        from AnalysisOfUnstructuredData.helpers.book import html_book
+        from AnalysisOfUnstructuredData.lists.list3 import analyser
+        eighty_years_analyser = analyser.BookAnalyser(html_book.HTMLBook.from_url(
+            url='https://www.gutenberg.org/files/103/103-h/103-h.htm'
+        ))
+        eighty_years_analyser.create_cities_dictionary(self._args.population)
+        eighty_years_analyser.process_whole_path(
+            self._args.city, self._args.distance, self._args.final_threshold, self._args.occurrences
+        )
+        if not self._args.out_path.endswith('.html'):
+            path = os.path.join(self._args.out_path, 'book_map.html')
+        else:
+            path = self._args.out_path
+        eighty_years_analyser.save_path_on_map(path)
+
 
 if __name__ == "__main__":
-    """d"""
     MainInterface().run()

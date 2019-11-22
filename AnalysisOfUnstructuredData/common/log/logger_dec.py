@@ -1,5 +1,5 @@
 import datetime
-import AgentBasedModeling.common.log.logger as ulog
+import AnalysisOfUnstructuredData.common.log.logger as ulog
 import functools
 
 
