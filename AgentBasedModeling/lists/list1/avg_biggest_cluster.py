@@ -35,10 +35,11 @@ def create_cluster_plot(
     cluster_sizes = []
     for p in probs:
         LOGGER.debug(f"Calculating for p = {p}.")
-        cluster_sizes.append(find_avg_cluster(lattice_size, p,state, monte_carlo_repetitions))
+        cluster_sizes.append(find_avg_cluster(lattice_size, p, state, monte_carlo_repetitions))
     line_handlers.append(ax.plot(probs, cluster_sizes, label=f"L = {lattice_size}"))
     ax.legend()
     ax.set_title('Average biggest cluster size.')
+
     ax.set_xlabel('plant probability')
     ax.set_ylabel('cluster size')
     file_name, file_format = out_file.split('.')

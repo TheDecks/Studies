@@ -1,0 +1,1 @@
+python -m AgentBasedModeling three -i "AgentBasedModeling\lists\list3\OtherResults\ExoticSomething\state.csv" -n "AgentBasedModeling\lists\list3\OtherResults\ExoticSomething\neighbourhood.csv" -b bottom -b top -b left -b right --up_threshold 4 --op_threshold 6 --reproduction_range 4 5
