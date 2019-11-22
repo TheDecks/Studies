@@ -37,6 +37,11 @@ class PlottingEngine(slp.SquareLatticePlotter):
             [th / max_neighbours for th in happiness_thresholds],
             width=1, color=self.colours
         )
+        for x, th in zip(range(self.number_groups), happiness_thresholds):
+            _happiness_axes.text(
+                x, (th / max_neighbours) / 2, str(th),
+                ha='center', va='center', fontsize=1.5*self.font_size, c='w',
+            )
         _happiness_axes.set_xlim([-0.5, self.number_groups - 0.5])
         _happiness_axes.set_ylim([0, 1.1])
         _happiness_axes.set_title(f'{max_neighbours} neighbours', fontsize=self.font_size)

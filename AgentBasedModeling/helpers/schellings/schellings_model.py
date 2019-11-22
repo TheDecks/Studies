@@ -172,7 +172,7 @@ if __name__ == '__main__':
     # sm.process_plotting()
     # sm.simulate(movement_type='random')
     # sm.process_plotting()
-    sm = SchellingModel(100, 1, [2500, 2500, 2500], [3, 4, 5], plot=False)
+    sm = SchellingModel(100, 1, [2500, 2500, 2500], [3, 4, 5], plot=True)
     sm.create_cells_links()
     res = sm.simulate(1, movement_type='random', max_iter=500)
     # sm.plotting_engine.animate()
