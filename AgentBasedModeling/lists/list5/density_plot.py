@@ -19,5 +19,7 @@ for p in ps:
     ax.plot(qs, velocities, label=f"{p}")
 
 ax.legend()
+ax.set_xlabel('rho')
+ax.set_ylabel('v')
 
 plt.show()
