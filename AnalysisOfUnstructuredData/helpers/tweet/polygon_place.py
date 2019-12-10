@@ -18,3 +18,10 @@ class PolygonPlace(Place):
                 if x + (y_p - y)/(prev_y - y) * (prev_x - x) < x_p:
                     contains = not contains
         return contains
+
+    def middle(self) -> Tuple[float, float]:
+        x, y = [], []
+        for _x, _y in self.points:
+            x.append(_x)
+            y.append(_y)
+        return (max(x) + min(x))/2 - 90, (max(y) + min(y))/2 - 180

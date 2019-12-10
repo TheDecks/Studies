@@ -3,12 +3,17 @@ from typing import Tuple, Optional, List
 import pandas as pd
 import re
 import bokeh.plotting as bplt
+import bokeh.layouts as blay
 import math
+import folium
 
 import AnalysisOfUnstructuredData.lists.list4.data_feeder as dataf
 from AnalysisOfUnstructuredData.helpers.tweet.place import Place
 from bokeh.palettes import Category20c
 from bokeh.transform import cumsum
+from bokeh.resources import INLINE
+from bokeh.embed import file_html
+from bokeh.models import LabelSet
 
 
 class EndomondoTracker:
@@ -163,28 +168,79 @@ class EndomondoTracker:
         ret.columns = ["Country", "Activity", "Distance", "Time", "Pace", "Occurrences"]
         return ret
 
-    def create_pie_charts_map(self):
+    def create_pie_charts(self, summariser: str = 'Occurrences') -> List:
         df = self.summarised()
+        plots = []
         for country in self.countries:
             df_temp = df[df['Country'] == country.name].copy()
             if not df_temp.empty:
-                df_temp["Angles"] = df_temp['Occurrences'] / df_temp['Occurrences'].sum() * 2 * math.pi
+                df_temp["Angle"] = df_temp[summariser] / df_temp[summariser].sum() * 2 * math.pi
                 no_colors = df_temp.shape[0]
                 select = no_colors if no_colors >= 3 else 3
                 cols = Category20c[select][:no_colors]
                 df_temp["Color"] = cols
-                plot = bplt.figure()
-                print(df_temp)
+                plot = bplt.figure(title=f"{summariser} share", width=200, height=200)
                 plot.wedge(
                     x=0, y=0, radius=1,
                     start_angle=cumsum('Angle', include_zero=True),
                     end_angle=cumsum('Angle'),
-                    line_color="white", fill_color='Color', legend='Country',
+                    line_color="white", fill_color='Color', # legend='Activity',
                     source=df_temp
                 )
-                #bplt.output_file()
-                bplt.show(plot)
-                break
+                plots.append(plot)
+            else:
+                plots.append(None)
+        return plots
+
+    def create_bar_plots(self, summariser: str = 'Occurrences') -> List:
+        df = self.summarised()
+        plots = []
+        for country in self.countries:
+            df_temp = df[df['Country'] == country.name].copy()
+            if not df_temp.empty:
+                no_colors = df_temp.shape[0]
+                select = no_colors if no_colors >= 3 else 3
+                cols = Category20c[select][:no_colors]
+                df_temp["Color"] = cols
+                plot = bplt.figure(x_range=df_temp['Activity'], title=f"{summariser}", width=200, height=300)
+                plot.xaxis.major_label_orientation = math.pi / 2
+                plot.vbar(x='Activity', top=summariser, source=df_temp, fill_color='Color', width=0.7)
+                plots.append(plot)
+            else:
+                plots.append(None)
+        return plots
+
+    def create_summarising_plot(self):
+        occ_pies = self.create_pie_charts()
+        time_bars = self.create_bar_plots('Time')
+        distance_bars = self.create_bar_plots("Distance")
+        pace_bars = self.create_bar_plots("Pace")
+        all_plot = []
+        for i in range(len(occ_pies)):
+            if occ_pies[i] is not None:
+                all_plot.append(blay.grid([
+                    [occ_pies[i], time_bars[i]],
+                    [distance_bars[i], pace_bars[i]]
+                ]))
+            else:
+                all_plot.append(None)
+        return all_plot
+
+    def draw_map(self, file_path: str):
+        my_map = folium.Map(location=[0, 0], zoom_start=2)
+        poses = [country.middle() for country in self.countries]
+        plots = self.create_summarising_plot()
+        for i in range(len(plots)):
+            if plots[i] is not None:
+                html = file_html(plots[i], INLINE)
+
+                iframe = folium.IFrame(html=html, width=420, height=620)
+                folium.Marker(
+                    poses[i], tooltip=self.countries[i].name,
+                    popup=folium.Popup(iframe, max_width=420)
+                ).add_to(my_map)
+
+        my_map.save(file_path)
 
 
 if __name__ == "__main__":
@@ -195,13 +251,9 @@ if __name__ == "__main__":
         access_token='1199289795463319553-PCe8pxHGts77prqpQ0KhP3O6ENHrWK',
         access_token_secret='Ou8JSTqcxGTPb2XlfSjGLsmv05J4Zt1ATJJeJQLOMtkRA'
     )
-    pd.set_option('display.max_rows', 500)
-    pd.set_option('display.max_columns', 500)
-    pd.set_option('display.width', 1000)
     for city in c.cities.values():
         tracker.add_city(city)
     for country in c.countries.values():
         tracker.add_country(country)
-    tracker.prepare_tweets_df(200)
-    print(tracker.summarised())
-    tracker.create_pie_charts_map()
+    tracker.prepare_tweets_df(10000)
+    tracker.draw_map('maps.html')

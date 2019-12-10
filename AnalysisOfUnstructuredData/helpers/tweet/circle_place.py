@@ -20,3 +20,6 @@ class CirclePlace(Place):
 
     def contains_map_point(self, point: Tuple[float, float]) -> bool:
         return self.contains_point(point)
+
+    def middle(self) -> Tuple[float, float]:
+        return self.mid

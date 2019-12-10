@@ -8,6 +8,9 @@ class Place(abc.ABC):
         self.name = name
 
     @abc.abstractmethod
+    def middle(self) -> Tuple[float, float]: ...
+
+    @abc.abstractmethod
     def contains_point(self, point: Tuple[float, float]) -> bool: ...
 
     def contains_map_point(self, point: Tuple[float, float]) -> bool:
