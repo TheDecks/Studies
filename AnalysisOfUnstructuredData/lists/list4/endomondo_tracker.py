@@ -246,10 +246,10 @@ class EndomondoTracker:
 if __name__ == "__main__":
     from AnalysisOfUnstructuredData.helpers.tweet import cities_countries as c
     tracker = EndomondoTracker(
-        consumer_key='eHJQ09OKnHAEtWaSfCDmSP5Se',
-        consumer_secret='zzzPq6DxrjSyo5hne4PuxJjX0AoTG5DDccO2xZZGHTSgNmLlTc',
-        access_token='1199289795463319553-PCe8pxHGts77prqpQ0KhP3O6ENHrWK',
-        access_token_secret='Ou8JSTqcxGTPb2XlfSjGLsmv05J4Zt1ATJJeJQLOMtkRA'
+        consumer_key='',
+        consumer_secret='',
+        access_token='',
+        access_token_secret=''
     )
     for city in c.cities.values():
         tracker.add_city(city)
