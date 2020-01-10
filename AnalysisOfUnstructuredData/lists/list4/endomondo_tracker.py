@@ -13,7 +13,6 @@ from bokeh.palettes import Category20c
 from bokeh.transform import cumsum
 from bokeh.resources import INLINE
 from bokeh.embed import file_html
-from bokeh.models import LabelSet
 
 
 class EndomondoTracker:
