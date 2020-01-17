@@ -73,7 +73,7 @@ if(typeof(window.mpld3) !== "undefined" && window.mpld3._mpld3IsLoaded){
 
 # General HTML template.  This should work correctly whether or not requirejs
 # is defined, and whether it's embedded in a notebook or in a standalone
-# HTML page.
+# HTML pg.
 GENERAL_HTML = jinja2.Template("""
 
 <style>
@@ -188,13 +188,13 @@ def fig_to_html(fig, d3_url=None, mpld3_url=None, no_extras=False,
     no_extras : boolean
         If true, remove any extra javascript or CSS. The output will be similar
         to that if the representation output by fig_to_json is embedded in
-        a web page.
+        a web pg.
     template_type : string
         string specifying the type of HTML template to use. Options are:
 
         ``"simple"``
-             suitable for a simple html page with one figure.  Will
-             fail if require.js is available on the page.
+             suitable for a simple html pg with one figure.  Will
+             fail if require.js is available on the pg.
         ``"notebook"``
              assumes require.js and jquery are available.
         ``"general"``
